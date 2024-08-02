@@ -3,17 +3,13 @@
 import { ArrowDown, RotateCw, Settings } from "lucide-react";
 import SwapPairCard from "./SwapPairCard";
 import { Button } from "./ui/button";
+import GeneralSettings from "./GeneralSettings";
 
 export default function SwapForm() {
   return (
     <form className="relative">
       <div className="absolute top-0 -right-2 translate-x-full flex flex-col gap-y-2">
-        <Button type="button" variant="settings" size="settings">
-          <Settings />
-        </Button>
-        <Button type="button" variant="settings" size="settings">
-          <RotateCw />
-        </Button>
+        <GeneralSettings />
       </div>
       <div className="w-[480px] p-4 flex flex-col gap-y-2 bg-patara_gray_50 rounded-xl text-patara_black">
         <div className="flex items-center justify-between h-8 mb-2">

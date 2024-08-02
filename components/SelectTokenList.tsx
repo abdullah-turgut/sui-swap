@@ -88,6 +88,19 @@ export default function SelectTokenList() {
               <p className="text-xs">$567</p>
             </div>
           </div>
+          <div className="w-full h-16 flex items-center justify-between px-5 py-3 bg-patara_gray_75 hover:bg-patara_gray_100 transition rounded-lg">
+            <div className="flex items-center gap-x-2">
+              <div className="w-10 h-10 bg-black rounded-full"></div>
+              <div className="flex flex-col">
+                <p className="text-sm font-medium">SUI</p>
+                <p className="text-xs">Sui</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <p className="text-sm font-medium">789</p>
+              <p className="text-xs">$567</p>
+            </div>
+          </div>
         </div>
       </ScrollArea>
     </div>
