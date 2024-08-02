@@ -1,45 +1,119 @@
 import React from "react";
-import {
-  Command,
-  CommandEmpty,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "./ui/command";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import { UseFormReturn } from "react-hook-form";
+import Image from "next/image";
+import { ITokenListResponse } from "@/utils/getTokenList";
+import { FormSchemaType } from "@/schema/formSchema";
 
-export default function TokenSearch() {
+import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
+import { Input } from "./ui/input";
+import { ScrollArea } from "./ui/scroll-area";
+import { Search } from "lucide-react";
+
+export default function TokenSearch({
+  form,
+  tokenList,
+  type,
+}: {
+  form: UseFormReturn<FormSchemaType>;
+  tokenList: ITokenListResponse[];
+  type: "Sell" | "Buy";
+}) {
+  const { watch, setValue } = form;
+  const field = type === "Sell" ? "sell_token" : "buy_token";
   return (
     <div className="px-4 flex gap-x-2 h-12">
-      {/**Değişecek */}
-      <Command className="border rounded-full flex-1 h-12">
-        <CommandInput
+      <div className="flex-1 relative">
+        <Search className="absolute top-1/2 left-2 -translate-y-1/2 opacity-50" />
+        <Input
+          onChange={(e) => setValue("search_token", e.currentTarget.value)}
+          className="w-full focus-visible:ring-transparent rounded-full h-full pl-10"
           placeholder="Search name or address"
-          className="h-12 border-none"
         />
-        {false && (
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandItem>
-              <span>Calendar</span>
-            </CommandItem>
-          </CommandList>
+        {watch("search_token") && (
+          <ScrollArea className="absolute -bottom-2 left-0 w-full h-[240px] z-50 bg-white rounded-lg border border-patara_gray_100">
+            <div className="flex flex-col gap-y-2 p-1">
+              {tokenList
+                .filter((t: ITokenListResponse) =>
+                  t.name
+                    .toLowerCase()
+                    .includes(watch("search_token").toLowerCase())
+                )
+                .map((t: ITokenListResponse) => (
+                  <div
+                    key={t.address}
+                    className="flex h-12 gap-x-2 items-center hover:bg-patara_gray_50 transition rounded-lg px-2 cursor-pointer"
+                    onClick={() => {
+                      setValue(field, t.symbol);
+                      setValue("search_token", "");
+                    }}
+                  >
+                    <Image
+                      src={t.logoURI}
+                      width={32}
+                      height={32}
+                      alt={watch(field)}
+                      className="rounded-full"
+                      onError={(e) =>
+                        (e.currentTarget.srcset =
+                          "https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/common/SUI.png")
+                      }
+                    />
+                    <p className="truncate select-none">{t.name}</p>
+                  </div>
+                ))}
+              {tokenList.filter((t: ITokenListResponse) =>
+                t.name
+                  .toLowerCase()
+                  .includes(watch("search_token").toLowerCase())
+              ).length === 0 && <p className="p-2 mx-auto">No result found!</p>}
+            </div>
+          </ScrollArea>
         )}
-      </Command>
-      <Select>
+      </div>
+      <Select
+        value={watch(field)}
+        onValueChange={(value) => setValue(field, value)}
+      >
         <SelectTrigger className="w-20 h-12 rounded-[50px] bg-patara_gray_75 px-2">
-          <div className="h-8 w-8 bg-black rounded-full" />
+          <Image
+            src={
+              tokenList.filter(
+                (t: ITokenListResponse) => t.symbol === watch(field)
+              )[0]!.logoURI
+            }
+            width={32}
+            height={32}
+            alt={watch(field)}
+            className="rounded-full"
+            onError={(e) =>
+              (e.currentTarget.srcset =
+                "https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/common/SUI.png")
+            }
+          />
         </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
+        <SelectContent className="gap-y-1">
+          {tokenList.map((token: ITokenListResponse) => (
+            <SelectItem
+              key={token.address}
+              value={token.symbol}
+              className="flex flex-row h-10"
+            >
+              <div className="flex items-center gap-x-2">
+                <Image
+                  src={token.logoURI}
+                  width={24}
+                  height={24}
+                  alt={token.name}
+                  className="rounded-full"
+                  onError={(e) =>
+                    (e.currentTarget.srcset =
+                      "https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/common/SUI.png")
+                  }
+                />
+                <p>{token.symbol}</p>
+              </div>
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
