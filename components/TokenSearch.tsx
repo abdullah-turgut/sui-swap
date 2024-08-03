@@ -49,9 +49,28 @@ export default function TokenSearch({
                     key={t.address}
                     className="flex h-12 gap-x-2 items-center hover:bg-patara_gray_50 transition rounded-lg px-2 cursor-pointer"
                     onClick={() => {
-                      setValue(name, t);
+                      setValue(
+                        name,
+                        form
+                          .watch("user.balances")
+                          .some((b: TokenSchemaType) => b.address === t.address)
+                          ? form
+                              .watch("user.balances")
+                              .filter(
+                                (b: TokenSchemaType) => b.address === t.address
+                              )[0]
+                          : t
+                      );
                       setValue("user.recent", [
-                        t,
+                        form
+                          .watch("user.balances")
+                          .some((b: TokenSchemaType) => b.address === t.address)
+                          ? form
+                              .watch("user.balances")
+                              .filter(
+                                (b: TokenSchemaType) => b.address === t.address
+                              )[0]
+                          : t,
                         ...form
                           .getValues("user.recent")
                           .filter((t, i) => i < 7),
@@ -89,8 +108,19 @@ export default function TokenSearch({
           <Select
             value={field.value.symbol}
             onValueChange={(value) => {
-              const token = tokenList.find((t) => t.symbol === value);
-              setValue(name, token!);
+              const token = tokenList.find((t) => t.symbol === value)!;
+              setValue(
+                name,
+                form
+                  .watch("user.balances")
+                  .some((b: TokenSchemaType) => b.address === token.address)
+                  ? form
+                      .watch("user.balances")
+                      .filter(
+                        (b: TokenSchemaType) => b.address === token.address
+                      )[0]
+                  : token
+              );
             }}
           >
             <SelectTrigger className="w-20 h-12 rounded-[50px] bg-patara_gray_75 px-2">
@@ -111,28 +141,30 @@ export default function TokenSearch({
               />
             </SelectTrigger>
             <SelectContent className="gap-y-1">
-              {tokenList.map((token: TokenSchemaType) => (
-                <SelectItem
-                  key={token.address}
-                  value={token.symbol}
-                  className="flex flex-row h-10"
-                >
-                  <div className="flex items-center gap-x-2">
-                    <Image
-                      src={token.logoURI}
-                      width={24}
-                      height={24}
-                      alt={token.name}
-                      className="rounded-full"
-                      onError={(e) =>
-                        (e.currentTarget.srcset =
-                          "https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/common/SUI.png")
-                      }
-                    />
-                    <p>{token.symbol}</p>
-                  </div>
-                </SelectItem>
-              ))}
+              {tokenList
+                .sort((a, b) => a.symbol.localeCompare(b.symbol))
+                .map((token: TokenSchemaType) => (
+                  <SelectItem
+                    key={token.address}
+                    value={token.symbol}
+                    className="flex flex-row h-10"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <Image
+                        src={token.logoURI}
+                        width={24}
+                        height={24}
+                        alt={token.name}
+                        className="rounded-full"
+                        onError={(e) =>
+                          (e.currentTarget.srcset =
+                            "https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/common/SUI.png")
+                        }
+                      />
+                      <p>{token.symbol}</p>
+                    </div>
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         )}

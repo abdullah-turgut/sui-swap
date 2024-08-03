@@ -16,6 +16,7 @@ export const tokenSchema = () => {
       .optional(),
     amount: z.number().optional(),
     price: z.number().optional(),
+    balance: z.number().optional(),
   });
 };
 
@@ -39,6 +40,7 @@ export const formSchema = () => {
   return z.object({
     sell_token: tokenSchema(),
     buy_token: tokenSchema(),
+    swap_amount: z.number(),
     search_token: z.string().optional(),
     user: userSchema(),
   });

@@ -23,26 +23,9 @@ export default function SwapForm({
   const form: UseFormReturn<FormSchemaType> = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema()),
     defaultValues: {
-      sell_token: {
-        chainId: 2,
-        address: "asdasd",
-        decimals: 1,
-        name: "SUI",
-        symbol: "SUI",
-        logoURI: "asdsad",
-        tags: ["asd"],
-        extensions: { coingeckoId: "sadasd" },
-      },
-      buy_token: {
-        chainId: 1,
-        address: "asdasd",
-        decimals: 1,
-        name: "SUI",
-        symbol: "SUI",
-        logoURI: "asdsad",
-        tags: ["asd"],
-        extensions: { coingeckoId: "sadasd" },
-      },
+      sell_token: userData.balances[0],
+      buy_token: userData.balances[1],
+      swap_amount: 0,
       user: userData,
     },
   });
@@ -58,31 +41,57 @@ export default function SwapForm({
       </div>
       <div className="w-[480px] p-4 flex flex-col gap-y-2 bg-patara_gray_50 rounded-xl text-patara_black">
         <div className="flex items-center justify-between h-8 mb-2">
-          <p className="font-medium text-sm">Balance: 21312312312 SUI</p>
+          <p className="font-medium text-sm">
+            Balance:{" "}
+            {form.watch("sell_token").amount
+              ? form.watch("sell_token").amount
+              : 0}{" "}
+            {form.watch("sell_token").symbol}
+          </p>
           <div className="flex gap-x-2">
-            <Button type="button" variant="rate" size="rate">
+            <Button
+              type="button"
+              variant="rate"
+              size="rate"
+              onClick={() => form.setValue("swap_amount", 0.25)}
+            >
               25%
             </Button>
-            <Button type="button" variant="rate" size="rate">
+            <Button
+              type="button"
+              variant="rate"
+              size="rate"
+              onClick={() => form.setValue("swap_amount", 0.5)}
+            >
               50%
             </Button>
-            <Button type="button" variant="rate" size="rate">
+            <Button
+              type="button"
+              variant="rate"
+              size="rate"
+              onClick={() => form.setValue("swap_amount", 0.75)}
+            >
               75%
             </Button>
-            <Button type="button" variant="rate" size="rate">
+            <Button
+              type="button"
+              variant="rate"
+              size="rate"
+              onClick={() => form.setValue("swap_amount", 1)}
+            >
               MAX
             </Button>
           </div>
         </div>
         <div className="flex flex-col gap-y-2 relative">
           <SwapPairCard
-            token="test"
+            token={form.watch("sell_token")}
             type="Sell"
             tokenList={tokenList}
             form={form}
           />
           <SwapPairCard
-            token="test"
+            token={form.watch("buy_token")}
             type="Buy"
             tokenList={tokenList}
             form={form}

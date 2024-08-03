@@ -9,7 +9,6 @@ export default function RouteSettings({
 }: {
   form: UseFormReturn<FormSchemaType>;
 }) {
-  console.log(form.getValues());
   return (
     <div className="h-16 p-4 w-full flex items-center justify-between bg-patara_gray_75 rounded-lg">
       <Controller

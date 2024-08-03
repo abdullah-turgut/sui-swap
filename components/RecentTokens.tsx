@@ -10,14 +10,26 @@ export default function RecentTokens({
   form: UseFormReturn<FormSchemaType>;
 }) {
   const name = type === "Sell" ? "sell_token" : "buy_token";
-  console.log(form.watch("user.recent"));
   return (
     <div className="px-4 flex flex-wrap gap-4 max-h-28 overflow-hidden">
       {form.watch("user.recent").map((token: TokenSchemaType) => (
         <div
           key={token.address}
           className="flex items-center gap-x-2 px-2 h-12 bg-patara_gray_75 border border-patara_gray_100 rounded-full hover:bg-patara_gray_200 transition cursor-pointer"
-          onClick={() => form.setValue(name, token)}
+          onClick={() =>
+            form.setValue(
+              name,
+              form
+                .watch("user.balances")
+                .some((b: TokenSchemaType) => b.address === token.address)
+                ? form
+                    .watch("user.balances")
+                    .filter(
+                      (b: TokenSchemaType) => b.address === token.address
+                    )[0]
+                : token
+            )
+          }
         >
           <Image
             src={token.logoURI}

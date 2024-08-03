@@ -20,6 +20,7 @@ export const userData: UserSchemaType = {
       extensions: {
         coingeckoId: "sui",
       },
+      amount: 1240,
     },
     {
       chainId: 1,
@@ -33,6 +34,7 @@ export const userData: UserSchemaType = {
       extensions: {
         coingeckoId: "tether-usd-wormhole-from-ethereum",
       },
+      amount: 500,
     },
     {
       chainId: 1,
@@ -46,6 +48,7 @@ export const userData: UserSchemaType = {
       extensions: {
         coingeckoId: "turbos-finance",
       },
+      amount: 759837,
     },
   ],
   recent: [

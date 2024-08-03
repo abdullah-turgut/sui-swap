@@ -11,7 +11,7 @@ export const getTokenList = async (): Promise<TokenSchemaType[] | null> => {
     }
 
     const { tokens: list } = await res.json();
-    return await list;
+    return await list.filter((token: TokenSchemaType) => token.extensions);
   } catch (error) {
     console.error("Failed to fetch token list:", error);
     return null;

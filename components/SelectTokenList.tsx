@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import Image from "next/image";
 import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
+import { CoinGeckoTokenData, getPrices } from "@/utils/getPrice";
 
 export default function SelectTokenList({
   type,
@@ -12,6 +13,37 @@ export default function SelectTokenList({
   form: UseFormReturn<FormSchemaType>;
 }) {
   const name = type === "Sell" ? "sell_token" : "buy_token";
+  const balances = useWatch({
+    control: form.control,
+    name: "user.balances",
+  });
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      const ids = balances.map(
+        (token: TokenSchemaType) => token.extensions!.coingeckoId!
+      );
+
+      if (ids.length > 0) {
+        try {
+          const prices = await getPrices(ids);
+
+          balances.forEach((b: TokenSchemaType) => {
+            b.price = prices?.filter(
+              (p: CoinGeckoTokenData) => b.extensions?.coingeckoId === p.id
+            )[0].current_price;
+          });
+
+          form.setValue("user.balances", balances);
+        } catch (error) {
+          console.error("Failed to fetch prices", error);
+        }
+      }
+    };
+
+    fetchPrices();
+  }, [balances, form, name]);
+
   return (
     <div className="pt-4 flex flex-col gap-y-4">
       <div className="px-9 flex items-center justify-between text-patara_gray_600 h-6">
@@ -20,7 +52,7 @@ export default function SelectTokenList({
       </div>
       <ScrollArea className="h-[405px]">
         <div className="px-4 flex flex-col gap-y-1">
-          {form.watch("user.balances").map((token: TokenSchemaType) => (
+          {balances.map((token: TokenSchemaType) => (
             <div
               key={token.address}
               className="w-full h-16 flex items-center justify-between px-5 py-3 bg-patara_gray_75 hover:bg-patara_gray_100 transition rounded-lg cursor-pointer"
@@ -44,8 +76,13 @@ export default function SelectTokenList({
                 </div>
               </div>
               <div className="flex flex-col items-end">
-                <p className="text-sm font-medium">789</p>
-                <p className="text-xs">$567</p>
+                <p className="text-sm font-medium">{token.amount}</p>
+                <p className="text-xs">
+                  $
+                  {token.price
+                    ? (token.amount! * token.price).toFixed(2)
+                    : "Loading..."}
+                </p>
               </div>
             </div>
           ))}
