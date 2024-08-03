@@ -3,7 +3,7 @@ import { UserSchemaType } from "@/schema/formSchema";
 export const userData: UserSchemaType = {
   settings: {
     slippage_mode: "auto",
-    slippage_rate: 0.3,
+    slippage_rate: 0.1,
     direct_route: true,
   },
   balances: [

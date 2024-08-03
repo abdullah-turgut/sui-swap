@@ -14,12 +14,15 @@ import {
   TokenSchemaType,
 } from "@/schema/formSchema";
 import { userData } from "@/mocks/user";
+import { useToast } from "./ui/use-toast";
+import { getPrices } from "@/utils/getPrice";
 
 export default function SwapForm({
   tokenList,
 }: {
   tokenList: TokenSchemaType[];
 }) {
+  const { toast } = useToast();
   const form: UseFormReturn<FormSchemaType> = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema()),
     defaultValues: {
@@ -30,8 +33,102 @@ export default function SwapForm({
     },
   });
 
-  function onSubmit(values: FormSchemaType) {
-    console.log(values);
+  async function onSubmit(values: FormSchemaType) {
+    try {
+      if (values.sell_token.amount === 0 || values.swap_amount === 0) {
+        throw new Error("You can't sell any token without having balance!");
+      }
+
+      if (!values.user.settings.direct_route) {
+        throw new Error("There is only direct swap between those token pairs!");
+      }
+
+      const initialPrice = values.sell_token.price!;
+      const newPrice = await getPrices([
+        values.sell_token.extensions?.coingeckoId!,
+      ]);
+
+      if (newPrice!.length === 0) {
+        throw new Error("Failed to fetch prices for the selected token!");
+      }
+      const lastPrice = newPrice![0]?.current_price;
+
+      const priceDifference =
+        Math.abs((lastPrice - initialPrice) / initialPrice) * 100;
+
+      if (priceDifference > values.user.settings.slippage_rate) {
+        throw new Error(
+          `The price difference is too high, exceeding slippage rate of ${values.user.settings.slippage_rate}%. Your swap process has been cancelled!`
+        );
+      }
+
+      const sellAmount =
+        values.sell_token.amount! * values.swap_amount * lastPrice;
+
+      const buyAmount = sellAmount / values.buy_token.price!;
+
+      const updatedBalances = [...values.user.balances];
+      const sellTokenIndex = updatedBalances.findIndex(
+        (token) => token.address === values.sell_token.address
+      );
+
+      if (sellTokenIndex !== -1) {
+        if (
+          updatedBalances[sellTokenIndex].amount! * (1 - values.swap_amount) ===
+          0
+        ) {
+          updatedBalances.splice(sellTokenIndex, 1);
+        } else {
+          updatedBalances[sellTokenIndex] = {
+            ...updatedBalances[sellTokenIndex],
+            amount:
+              updatedBalances[sellTokenIndex].amount! *
+              (1 - values.swap_amount),
+          };
+        }
+      }
+
+      const buyTokenIndex = updatedBalances.findIndex(
+        (token) => token.address === values.buy_token.address
+      );
+
+      if (buyTokenIndex !== -1) {
+        updatedBalances[buyTokenIndex] = {
+          ...updatedBalances[buyTokenIndex],
+          amount: updatedBalances[buyTokenIndex].amount! + buyAmount,
+        };
+      } else {
+        updatedBalances.push({
+          ...values.buy_token,
+          amount: buyAmount,
+        });
+      }
+
+      form.setValue("user.balances", updatedBalances);
+      form.setValue(
+        "sell_token.amount",
+        values.sell_token.amount! * (1 - values.swap_amount)
+      );
+      form.setValue("buy_token.amount", buyAmount);
+      form.setValue("swap_amount", 0);
+
+      toast({
+        variant: "default",
+        description: `Successfully swapped ${
+          values.sell_token.amount! * values.swap_amount
+        } ${values.sell_token.symbol} for ${buyAmount} ${
+          values.buy_token.symbol
+        }!`,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    }
   }
 
   return (
@@ -100,7 +197,13 @@ export default function SwapForm({
             <ArrowDown className="w-6 h-6" />
           </div>
         </div>
-        <Button type="submit">Swap</Button>
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="disabled:bg-patara_gray_100"
+        >
+          Swap
+        </Button>
       </div>
     </form>
   );

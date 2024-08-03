@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { CoinGeckoTokenData, getPrices } from "@/utils/getPrice";
+import { Skeleton } from "./ui/skeleton";
 
 export default function SelectTokenList({
   type,
@@ -42,7 +43,7 @@ export default function SelectTokenList({
     };
 
     fetchPrices();
-  }, [balances, form, name]);
+  }, []);
 
   return (
     <div className="pt-4 flex flex-col gap-y-4">
@@ -77,12 +78,13 @@ export default function SelectTokenList({
               </div>
               <div className="flex flex-col items-end">
                 <p className="text-sm font-medium">{token.amount}</p>
-                <p className="text-xs">
-                  $
-                  {token.price
-                    ? (token.amount! * token.price).toFixed(2)
-                    : "Loading..."}
-                </p>
+                {token.price ? (
+                  <p className="text-xs">
+                    ${(token.amount! * token.price).toFixed(2)}
+                  </p>
+                ) : (
+                  <Skeleton className="h-3 w-[75px] rounded-lg" />
+                )}
               </div>
             </div>
           ))}

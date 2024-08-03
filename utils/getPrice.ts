@@ -38,6 +38,7 @@ const options = {
     "x-cg-demo-api-key": process.env.NEXT_PUBLIC_COINGECKO_API!,
   },
 };
+
 export const getPrices = async (
   ids: string[]
 ): Promise<CoinGeckoTokenData[] | null> => {

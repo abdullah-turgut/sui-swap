@@ -68,6 +68,7 @@ export default function SlippageSettings({
               variant="rate"
               size="rate"
               className="border-patara_gray_100 h-8 px-2 py-0"
+              onClick={() => form.setValue("user.settings.slippage_rate", 0.3)}
             >
               0.3%
             </Button>
@@ -76,6 +77,7 @@ export default function SlippageSettings({
               variant="rate"
               size="rate"
               className="border-patara_gray_100 h-8 px-2 py-0"
+              onClick={() => form.setValue("user.settings.slippage_rate", 0.5)}
             >
               0.5%
             </Button>
@@ -84,6 +86,7 @@ export default function SlippageSettings({
               variant="rate"
               size="rate"
               className="border-patara_gray_100 h-8 px-2 py-0"
+              onClick={() => form.setValue("user.settings.slippage_rate", 1)}
             >
               1%
             </Button>

@@ -13,6 +13,7 @@ import { UseFormReturn, useWatch } from "react-hook-form";
 import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
 import { X } from "lucide-react";
 import { getPrices } from "@/utils/getPrice";
+import { Skeleton } from "./ui/skeleton";
 
 export default function SwapPairCard({
   token,
@@ -44,11 +45,13 @@ export default function SwapPairCard({
         );
       });
     }
-  }, [selectedToken, form, type]);
+  }, [selectedToken.address, form, type]);
 
   const sellAmount = (form.watch("sell_token").amount || 0) * (swapAmount || 0);
   const buyAmount =
     (sellAmount * form.watch("sell_token").price!) / token.price!;
+
+  const typeAmount = type === "Sell" ? sellAmount : buyAmount;
 
   return (
     <div className="w-full p-4 rounded-lg flex justify-between items-center bg-patara_gray_75 h-[120px] border border-patara_gray_50 hover:border-patara_blue transition">
@@ -80,19 +83,20 @@ export default function SwapPairCard({
       </Dialog>
       <div className="flex flex-col gap-y-[10px] items-end">
         <p className="text-sm text-patara_gray_600 font-medium">{type}</p>
-        {type === "Sell" && (
+        {token.price ? (
           <p className="text-2xl text-patara_black font-medium">
-            {sellAmount.toFixed(2)}
+            {typeAmount.toFixed(2)}
           </p>
+        ) : (
+          <Skeleton className="h-[24px] rounded-lg w-[150px]" />
         )}
-        {type === "Buy" && (
-          <p className="text-2xl text-patara_black font-medium">
-            {buyAmount.toFixed(2)}
+        {token.price ? (
+          <p className="text-sm text-patara_black font-medium">
+            ${token.price.toFixed(token.decimals)}
           </p>
+        ) : (
+          <Skeleton className="h-[14px] rounded-lg w-[100px]" />
         )}
-        <p className="text-sm text-patara_black font-medium">
-          ${token.price ? token.price.toFixed(token.decimals) : "Loading..."}
-        </p>
       </div>
     </div>
   );
