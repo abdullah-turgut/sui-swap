@@ -43,7 +43,7 @@ export default function SelectTokenList({
     };
 
     fetchPrices();
-  }, []);
+  }, [form.formState.dirtyFields]);
 
   return (
     <div className="pt-4 flex flex-col gap-y-4">

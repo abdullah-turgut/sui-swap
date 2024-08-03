@@ -45,7 +45,7 @@ export default function SwapPairCard({
         );
       });
     }
-  }, [selectedToken.address, form, type]);
+  }, [selectedToken.address, form, type, form.formState.dirtyFields]);
 
   const sellAmount = (form.watch("sell_token").amount || 0) * (swapAmount || 0);
   const buyAmount =

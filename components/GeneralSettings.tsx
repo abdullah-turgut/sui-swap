@@ -57,7 +57,10 @@ export default function GeneralSettings({
         type="button"
         variant="settings"
         size="settings"
-        onClick={() => form.reset()}
+        onClick={() => {
+          form.reset();
+          form.trigger();
+        }}
       >
         <RotateCw />
       </Button>
