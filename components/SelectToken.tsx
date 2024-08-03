@@ -2,9 +2,8 @@ import React from "react";
 import TokenSearch from "./TokenSearch";
 import RecentTokens from "./RecentTokens";
 import SelectTokenList from "./SelectTokenList";
-import { ITokenListResponse } from "@/utils/getTokenList";
 import { UseFormReturn } from "react-hook-form";
-import { FormSchemaType } from "@/schema/formSchema";
+import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
 
 export default function SelectToken({
   type,
@@ -12,7 +11,7 @@ export default function SelectToken({
   form,
 }: {
   type: "Sell" | "Buy";
-  tokenList: ITokenListResponse[];
+  tokenList: TokenSchemaType[];
   form: UseFormReturn<FormSchemaType>;
 }) {
   return (

@@ -1,8 +1,7 @@
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import Image from "next/image";
-import { ITokenListResponse } from "@/utils/getTokenList";
-import { FormSchemaType } from "@/schema/formSchema";
+import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
 
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 import { Input } from "./ui/input";
@@ -15,7 +14,7 @@ export default function TokenSearch({
   type,
 }: {
   form: UseFormReturn<FormSchemaType>;
-  tokenList: ITokenListResponse[];
+  tokenList: TokenSchemaType[];
   type: "Sell" | "Buy";
 }) {
   const { watch, setValue } = form;
@@ -33,17 +32,17 @@ export default function TokenSearch({
           <ScrollArea className="absolute -bottom-2 left-0 w-full h-[240px] z-50 bg-white rounded-lg border border-patara_gray_100">
             <div className="flex flex-col gap-y-2 p-1">
               {tokenList
-                .filter((t: ITokenListResponse) =>
+                .filter((t: TokenSchemaType) =>
                   t.name
                     .toLowerCase()
                     .includes(watch("search_token").toLowerCase())
                 )
-                .map((t: ITokenListResponse) => (
+                .map((t: TokenSchemaType) => (
                   <div
                     key={t.address}
                     className="flex h-12 gap-x-2 items-center hover:bg-patara_gray_50 transition rounded-lg px-2 cursor-pointer"
                     onClick={() => {
-                      setValue(field, t.symbol);
+                      setValue(field, t);
                       setValue("search_token", "");
                     }}
                   >
@@ -51,7 +50,7 @@ export default function TokenSearch({
                       src={t.logoURI}
                       width={32}
                       height={32}
-                      alt={watch(field)}
+                      alt={watch(field).name}
                       className="rounded-full"
                       onError={(e) =>
                         (e.currentTarget.srcset =
@@ -61,7 +60,7 @@ export default function TokenSearch({
                     <p className="truncate select-none">{t.name}</p>
                   </div>
                 ))}
-              {tokenList.filter((t: ITokenListResponse) =>
+              {tokenList.filter((t: TokenSchemaType) =>
                 t.name
                   .toLowerCase()
                   .includes(watch("search_token").toLowerCase())
@@ -71,19 +70,22 @@ export default function TokenSearch({
         )}
       </div>
       <Select
-        value={watch(field)}
-        onValueChange={(value) => setValue(field, value)}
+        value={watch(field).symbol}
+        onValueChange={(value) => {
+          const token = tokenList.find((t) => t.symbol === value);
+          setValue(field, token!);
+        }}
       >
         <SelectTrigger className="w-20 h-12 rounded-[50px] bg-patara_gray_75 px-2">
           <Image
             src={
               tokenList.filter(
-                (t: ITokenListResponse) => t.symbol === watch(field)
+                (t: TokenSchemaType) => t.symbol === watch(field).symbol
               )[0]!.logoURI
             }
             width={32}
             height={32}
-            alt={watch(field)}
+            alt={watch(field).name}
             className="rounded-full"
             onError={(e) =>
               (e.currentTarget.srcset =
@@ -92,7 +94,7 @@ export default function TokenSearch({
           />
         </SelectTrigger>
         <SelectContent className="gap-y-1">
-          {tokenList.map((token: ITokenListResponse) => (
+          {tokenList.map((token: TokenSchemaType) => (
             <SelectItem
               key={token.address}
               value={token.symbol}

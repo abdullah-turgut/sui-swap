@@ -4,8 +4,14 @@ import { Button } from "./ui/button";
 import { RotateCw, Settings } from "lucide-react";
 import SlippageSettings from "./SlippageSettings";
 import RouteSettings from "./RouteSettings";
+import { UseFormReturn } from "react-hook-form";
+import { FormSchemaType } from "@/schema/formSchema";
 
-export default function GeneralSettings() {
+export default function GeneralSettings({
+  form,
+}: {
+  form: UseFormReturn<FormSchemaType>;
+}) {
   return (
     <div className="absolute top-0 right-0 translate-x-full flex flex-col gap-y-2">
       <Dialog>
@@ -17,8 +23,8 @@ export default function GeneralSettings() {
             General Settings
           </h2>
           <div className="flex flex-col gap-y-2">
-            <SlippageSettings />
-            <RouteSettings />
+            <SlippageSettings form={form} />
+            <RouteSettings form={form} />
             <Button type="button">Save Settings</Button>
           </div>
         </DialogContent>

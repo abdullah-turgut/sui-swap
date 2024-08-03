@@ -2,24 +2,35 @@ import React from "react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
-import { Divide } from "lucide-react";
-import { Switch } from "./ui/switch";
-import { Button } from "./ui/button";
 
-export default function SlippageSettings() {
-  const test = false;
+import { Button } from "./ui/button";
+import { UseFormReturn } from "react-hook-form";
+import { FormSchemaType } from "@/schema/formSchema";
+
+export default function SlippageSettings({
+  form,
+}: {
+  form: UseFormReturn<FormSchemaType>;
+}) {
+  const { watch, setValue } = form;
   return (
     <div className="min-h-16 p-4 flex flex-col items-center bg-patara_gray_75 rounded-lg gap-y-4 ring-[1px] ring-patara_gray_100">
       <div className="flex items-center justify-between w-full">
         <p className="font-medium text-patara_black">Slippage Mode</p>
-        <RadioGroup className="flex" defaultValue="auto">
+        <RadioGroup
+          className="flex"
+          defaultValue={watch("user.settings.slippage_mode")}
+          onValueChange={(value: "auto" | "fixed") =>
+            setValue("user.settings.slippage_mode", value)
+          }
+        >
           <div className="flex items-center">
             <RadioGroupItem value="auto" id="auto" className="hidden" />
             <Label
               htmlFor="auto"
               className={cn(
                 "h-9 w-16 flex items-center justify-center cursor-pointer  text-sm font-medium  rounded-lg transition",
-                test
+                watch("user.settings.slippage_mode") === "auto"
                   ? "bg-patara_blue text-patara_gray_50"
                   : "bg-patara_gray_100 text-patara_gray_600"
               )}
@@ -33,7 +44,7 @@ export default function SlippageSettings() {
               htmlFor="fixed"
               className={cn(
                 "h-9 w-16 flex items-center justify-center cursor-pointer bg-patara_gray_100 text-sm font-medium text-patara_gray_600 rounded-lg transition",
-                !test
+                watch("user.settings.slippage_mode") === "fixed"
                   ? "bg-patara_blue text-patara_gray_50"
                   : "bg-patara_gray_100 text-patara_gray_600"
               )}
@@ -43,7 +54,7 @@ export default function SlippageSettings() {
           </div>
         </RadioGroup>
       </div>
-      {!test && (
+      {watch("user.settings.slippage_mode") === "fixed" && (
         <div className="flex w-full justify-between items-center h-8">
           <p className="font-medium text-patara_black">Slippage Rate</p>
           <div className="flex gap-x-2">

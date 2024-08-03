@@ -9,9 +9,8 @@ import {
 } from "./ui/dialog";
 import SelectToken from "./SelectToken";
 import PairSelect from "./PairSelect";
-import { ITokenListResponse } from "@/utils/getTokenList";
 import { UseFormReturn } from "react-hook-form";
-import { FormSchemaType } from "@/schema/formSchema";
+import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
 
 export default function SwapPairCard({
   token,
@@ -22,7 +21,7 @@ export default function SwapPairCard({
   token: string;
   type: "Sell" | "Buy";
   form: UseFormReturn<FormSchemaType>;
-  tokenList: ITokenListResponse[];
+  tokenList: TokenSchemaType[];
 }) {
   return (
     <div className="w-full p-4 rounded-lg flex justify-between items-center bg-patara_gray_75 h-[120px] border border-patara_gray_50 hover:border-patara_blue transition">

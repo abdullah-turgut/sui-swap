@@ -1,28 +1,53 @@
 "use client";
 
-import { z } from "zod";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { ITokenListResponse } from "@/utils/getTokenList";
 
 import { ArrowDown } from "lucide-react";
 import SwapPairCard from "./SwapPairCard";
 import { Button } from "./ui/button";
 import GeneralSettings from "./GeneralSettings";
-import { formSchema, FormSchemaType } from "@/schema/formSchema";
+import {
+  formSchema,
+  FormSchemaType,
+  TokenSchemaType,
+} from "@/schema/formSchema";
 
 export default function SwapForm({
   tokenList,
 }: {
-  tokenList: ITokenListResponse[];
+  tokenList: TokenSchemaType[];
 }) {
   const form: UseFormReturn<FormSchemaType> = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema()),
     defaultValues: {
-      sell_token: "SUI",
-      buy_token: "USDT",
-      search_token: "",
+      sell_token: {
+        chainId: "asdas",
+        address: "asdasd",
+        decimals: 1,
+        name: "SUI",
+        symbol: "SUI",
+        logoURI: "asdsad",
+        tags: ["asd"],
+        extensions: { coingeckoId: "sadasd" },
+      },
+      buy_token: {
+        chainId: "asdas",
+        address: "asdasd",
+        decimals: 1,
+        name: "SUI",
+        symbol: "SUI",
+        logoURI: "asdsad",
+        tags: ["asd"],
+        extensions: { coingeckoId: "sadasd" },
+      },
+      user: {
+        settings: {
+          slippage_mode: "auto",
+          slippage_rate: 0.1,
+          direct_route: true,
+        },
+      },
     },
   });
 
@@ -30,7 +55,7 @@ export default function SwapForm({
   return (
     <form className="relative">
       <div className="absolute top-0 -right-2 translate-x-full flex flex-col gap-y-2">
-        <GeneralSettings />
+        <GeneralSettings form={form} />
       </div>
       <div className="w-[480px] p-4 flex flex-col gap-y-2 bg-patara_gray_50 rounded-xl text-patara_black">
         <div className="flex items-center justify-between h-8 mb-2">

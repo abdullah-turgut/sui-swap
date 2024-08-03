@@ -9,5 +9,5 @@ export default async function Home() {
     return notFound();
   }
 
-  return <SwapForm tokenList={tokenList} />;
+  return <SwapForm tokenList={tokenList ? tokenList : []} />;
 }

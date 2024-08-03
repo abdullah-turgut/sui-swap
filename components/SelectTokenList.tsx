@@ -1,12 +1,12 @@
 import React from "react";
 import { ScrollArea } from "./ui/scroll-area";
-import { ITokenListResponse } from "@/utils/getTokenList";
 import Image from "next/image";
+import { TokenSchemaType } from "@/schema/formSchema";
 
 export default function SelectTokenList({
   tokenList,
 }: {
-  tokenList: ITokenListResponse[];
+  tokenList: TokenSchemaType[];
 }) {
   return (
     <div className="pt-4 flex flex-col gap-y-4">
@@ -16,7 +16,7 @@ export default function SelectTokenList({
       </div>
       <ScrollArea className="h-[405px]">
         <div className="px-4 flex flex-col gap-y-1">
-          {tokenList.map((token: ITokenListResponse) => (
+          {tokenList.map((token: TokenSchemaType) => (
             <div
               key={token.address}
               className="w-full h-16 flex items-center justify-between px-5 py-3 bg-patara_gray_75 hover:bg-patara_gray_100 transition rounded-lg"
