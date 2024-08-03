@@ -1,13 +1,17 @@
 import React from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import Image from "next/image";
-import { TokenSchemaType } from "@/schema/formSchema";
+import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
+import { UseFormReturn } from "react-hook-form";
 
 export default function SelectTokenList({
-  tokenList,
+  type,
+  form,
 }: {
-  tokenList: TokenSchemaType[];
+  type: "Sell" | "Buy";
+  form: UseFormReturn<FormSchemaType>;
 }) {
+  const name = type === "Sell" ? "sell_token" : "buy_token";
   return (
     <div className="pt-4 flex flex-col gap-y-4">
       <div className="px-9 flex items-center justify-between text-patara_gray_600 h-6">
@@ -16,10 +20,11 @@ export default function SelectTokenList({
       </div>
       <ScrollArea className="h-[405px]">
         <div className="px-4 flex flex-col gap-y-1">
-          {tokenList.map((token: TokenSchemaType) => (
+          {form.watch("user.balances").map((token: TokenSchemaType) => (
             <div
               key={token.address}
-              className="w-full h-16 flex items-center justify-between px-5 py-3 bg-patara_gray_75 hover:bg-patara_gray_100 transition rounded-lg"
+              className="w-full h-16 flex items-center justify-between px-5 py-3 bg-patara_gray_75 hover:bg-patara_gray_100 transition rounded-lg cursor-pointer"
+              onClick={() => form.setValue(name, token)}
             >
               <div className="flex items-center gap-x-2">
                 <Image

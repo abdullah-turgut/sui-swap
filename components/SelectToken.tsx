@@ -21,9 +21,9 @@ export default function SelectToken({
       </h2>
       <div className="flex flex-col gap-y-4 border-b border-patara_gray_100 pb-4">
         <TokenSearch tokenList={tokenList} form={form} type={type} />
-        <RecentTokens />
+        <RecentTokens form={form} type={type} />
       </div>
-      <SelectTokenList tokenList={tokenList} />
+      <SelectTokenList form={form} type={type} />
     </div>
   );
 }

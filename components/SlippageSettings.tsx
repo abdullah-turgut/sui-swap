@@ -4,7 +4,7 @@ import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
 
 import { Button } from "./ui/button";
-import { UseFormReturn } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { FormSchemaType } from "@/schema/formSchema";
 
 export default function SlippageSettings({
@@ -13,46 +13,51 @@ export default function SlippageSettings({
   form: UseFormReturn<FormSchemaType>;
 }) {
   const { watch, setValue } = form;
+
   return (
     <div className="min-h-16 p-4 flex flex-col items-center bg-patara_gray_75 rounded-lg gap-y-4 ring-[1px] ring-patara_gray_100">
       <div className="flex items-center justify-between w-full">
         <p className="font-medium text-patara_black">Slippage Mode</p>
-        <RadioGroup
-          className="flex"
-          defaultValue={watch("user.settings.slippage_mode")}
-          onValueChange={(value: "auto" | "fixed") =>
-            setValue("user.settings.slippage_mode", value)
-          }
-        >
-          <div className="flex items-center">
-            <RadioGroupItem value="auto" id="auto" className="hidden" />
-            <Label
-              htmlFor="auto"
-              className={cn(
-                "h-9 w-16 flex items-center justify-center cursor-pointer  text-sm font-medium  rounded-lg transition",
-                watch("user.settings.slippage_mode") === "auto"
-                  ? "bg-patara_blue text-patara_gray_50"
-                  : "bg-patara_gray_100 text-patara_gray_600"
-              )}
+        <Controller
+          name="user.settings.slippage_mode"
+          control={form.control}
+          render={({ field }) => (
+            <RadioGroup
+              className="flex"
+              defaultValue={field.value}
+              onValueChange={field.onChange}
             >
-              Auto
-            </Label>
-          </div>
-          <div className="flex items-center">
-            <RadioGroupItem value="fixed" id="fixed" className="hidden" />
-            <Label
-              htmlFor="fixed"
-              className={cn(
-                "h-9 w-16 flex items-center justify-center cursor-pointer bg-patara_gray_100 text-sm font-medium text-patara_gray_600 rounded-lg transition",
-                watch("user.settings.slippage_mode") === "fixed"
-                  ? "bg-patara_blue text-patara_gray_50"
-                  : "bg-patara_gray_100 text-patara_gray_600"
-              )}
-            >
-              Fixed
-            </Label>
-          </div>
-        </RadioGroup>
+              <div className="flex items-center">
+                <RadioGroupItem value="auto" id="auto" className="hidden" />
+                <Label
+                  htmlFor="auto"
+                  className={cn(
+                    "h-9 w-16 flex items-center justify-center cursor-pointer  text-sm font-medium  rounded-lg transition",
+                    field.value === "auto"
+                      ? "bg-patara_blue text-patara_gray_50"
+                      : "bg-patara_gray_100 text-patara_gray_600"
+                  )}
+                >
+                  Auto
+                </Label>
+              </div>
+              <div className="flex items-center">
+                <RadioGroupItem value="fixed" id="fixed" className="hidden" />
+                <Label
+                  htmlFor="fixed"
+                  className={cn(
+                    "h-9 w-16 flex items-center justify-center cursor-pointer bg-patara_gray_100 text-sm font-medium text-patara_gray_600 rounded-lg transition",
+                    field.value === "fixed"
+                      ? "bg-patara_blue text-patara_gray_50"
+                      : "bg-patara_gray_100 text-patara_gray_600"
+                  )}
+                >
+                  Fixed
+                </Label>
+              </div>
+            </RadioGroup>
+          )}
+        />
       </div>
       {watch("user.settings.slippage_mode") === "fixed" && (
         <div className="flex w-full justify-between items-center h-8">

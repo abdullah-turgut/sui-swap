@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -11,6 +12,7 @@ import SelectToken from "./SelectToken";
 import PairSelect from "./PairSelect";
 import { UseFormReturn } from "react-hook-form";
 import { FormSchemaType, TokenSchemaType } from "@/schema/formSchema";
+import { X } from "lucide-react";
 
 export default function SwapPairCard({
   token,
@@ -37,6 +39,12 @@ export default function SwapPairCard({
           />
         </DialogTrigger>
         <DialogContent className="w-[480px] py-4 px-0">
+          <DialogClose
+            className="absolute top-4 right-4 flex items-center justify-center cursor-pointer"
+            asChild
+          >
+            <X className="h-6 w-6" />
+          </DialogClose>
           <DialogTitle hidden aria-describedby="SelectToken"></DialogTitle>
           <DialogDescription
             hidden

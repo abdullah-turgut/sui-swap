@@ -10,8 +10,10 @@ import GeneralSettings from "./GeneralSettings";
 import {
   formSchema,
   FormSchemaType,
+  SettingsSchemaType,
   TokenSchemaType,
 } from "@/schema/formSchema";
+import { userData } from "@/mocks/user";
 
 export default function SwapForm({
   tokenList,
@@ -22,7 +24,7 @@ export default function SwapForm({
     resolver: zodResolver(formSchema()),
     defaultValues: {
       sell_token: {
-        chainId: "asdas",
+        chainId: 2,
         address: "asdasd",
         decimals: 1,
         name: "SUI",
@@ -32,7 +34,7 @@ export default function SwapForm({
         extensions: { coingeckoId: "sadasd" },
       },
       buy_token: {
-        chainId: "asdas",
+        chainId: 1,
         address: "asdasd",
         decimals: 1,
         name: "SUI",
@@ -41,19 +43,16 @@ export default function SwapForm({
         tags: ["asd"],
         extensions: { coingeckoId: "sadasd" },
       },
-      user: {
-        settings: {
-          slippage_mode: "auto",
-          slippage_rate: 0.1,
-          direct_route: true,
-        },
-      },
+      user: userData,
     },
   });
 
-  console.log(form.getValues());
+  function onSubmit(values: FormSchemaType) {
+    console.log(values);
+  }
+
   return (
-    <form className="relative">
+    <form className="relative" onSubmit={form.handleSubmit(onSubmit)}>
       <div className="absolute top-0 -right-2 translate-x-full flex flex-col gap-y-2">
         <GeneralSettings form={form} />
       </div>
@@ -92,7 +91,7 @@ export default function SwapForm({
             <ArrowDown className="w-6 h-6" />
           </div>
         </div>
-        <Button>Swap</Button>
+        <Button type="submit">Swap</Button>
       </div>
     </form>
   );
