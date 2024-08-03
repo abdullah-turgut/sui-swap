@@ -16,7 +16,7 @@ export default function RouteSettings({
         name="user.settings.direct_route"
         render={({ field }) => (
           <>
-            <Label htmlFor="direct">Slippage Rate</Label>
+            <Label htmlFor="direct">Direct Route Only</Label>
             <Switch
               id="direct"
               className="h-7 w-[52px]"
